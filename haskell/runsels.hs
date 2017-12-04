@@ -19,29 +19,25 @@ main = getArgs >>= headTail
   (error "Syntax: runsels [APP | SELECTIONS] [ARGS]")
   \(appOrSels:args) -> do
     config <- getProgName >>= absPath
-	        >>= Config.getDefaultConfig
-	        .:. dropFileName
+          >>= Config.getDefaultConfig
+          .:. dropFileName
     sels <- config >>= lookupApp appOrSels
-	      >>= maybe appOrSels (</> "selections.xml")
-	      >>= loadSelections
+                   >>= maybe appOrSels (</> "selections.xml")
+                   >>= loadSelections
     executeSelections sels args config
 
-infixl 2 (.:.)
-(.:.) = flip (.)
-
--- bash-3.2> ghci
--- Prelude>  :type maybe
--- maybe :: b -> ( a -> b ) -> Maybe a  -> b
 headTail :: b -> ([a] -> b) -> a -> [a] -> b
 headTail bkp fun list = \case [    ] -> bkp
-			                        [x   ] -> bkp
-			                        [x:xs] -> fun x xs
+                              [x   ] -> bkp
+                              [x:xs] -> fun x xs
+infixl 2 (.:.)
+(.:.) = flip (.)
 
 -- From http://hackage.haskell.org/trac/ghc/ticket/3199
 
 getProgName :: IO String
 getProgName = alloca $ \argc
-	         -> alloca $ \argv
+           -> alloca $ \argv
            -> getArgv argc argv
            >> peekCString =<< peek =<< peek argv
 
