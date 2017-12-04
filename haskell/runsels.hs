@@ -36,9 +36,7 @@ infixl 2 (.:.)
 -- From http://hackage.haskell.org/trac/ghc/ticket/3199
 
 getProgName :: IO String
-getProgName = alloca $ \argc
-           -> alloca $ \argv
-           -> getArgv argc argv
+getProgName = alloca (alloca . getArgv)
            >> peekCString =<< peek =<< peek argv
 
 foreign import ccall unsafe "getFullProgArgv"
