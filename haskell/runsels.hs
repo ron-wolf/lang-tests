@@ -22,7 +22,8 @@ main = getArgs >>= headTail
           >>= Config.getDefaultConfig
           .:. dropFileName
     sels <- config >>= lookupApp appOrSels
-                   >>= maybe appOrSels (</> "selections.xml")
+                   >>= maybe appOrSels
+                  (</> "selections.xml")
                    >>= loadSelections
     executeSelections sels args config
 
